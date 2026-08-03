@@ -80,7 +80,7 @@ export default function HistoryView({ entries, onOpen, onChanged }) {
       )}
 
       <p className="fineprint">
-        * og stiplet ramme = læst ud af ingredienslisten, ikke et allergenfelt.
+        * og stiplet kant = læst ud af ingredienslisten, ikke et allergenfelt.
       </p>
     </section>
   );

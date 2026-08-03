@@ -148,7 +148,7 @@ function FoundResult({ lookup }) {
   );
 }
 
-/** Hvad listen duede til — så det er synligt hvad stemplet bygger på. */
+/** Hvad listen duede til — så det er synligt hvad vurderingen bygger på. */
 const INGREDIENT_BASIS = {
   [QUALITY.FULL]: 'Hel liste, gennemsøgt for kornsorter',
   [QUALITY.THIN]: 'For kort til at bygge en vurdering på',

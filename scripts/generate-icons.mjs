@@ -2,8 +2,8 @@
   Genererer app-ikonerne uden afhængigheder — ingen billedbibliotek, ingen
   binære filer der skal vedligeholdes i hånden. Kør: npm run icons
 
-  Motivet er det samme som appens identitet: et stempelaftryk på papir med
-  en stregkode indeni.
+  Motivet er det samme som appens identitet: ét fladt, mørkt felt med en
+  stregkode i hvidt. Ingen ramme, ingen effekter.
 */
 
 import { deflateSync } from 'node:zlib';
@@ -13,8 +13,8 @@ import { fileURLToPath } from 'node:url';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icons');
 
-const PAPER = [0xd6, 0xd0, 0xba];
-const INK = [0x1e, 0x1d, 0x19];
+const FIELD = [0x10, 0x18, 0x28]; // samme mørke som primærknappen
+const MARK = [0xff, 0xff, 0xff];
 
 /** Simpelt RGB-lærred. */
 function canvas(size, fill) {
@@ -100,31 +100,26 @@ function crc32(buf) {
   return (c ^ 0xffffffff) >>> 0;
 }
 
-/** Stempelramme + stregkode. `inset` er sikkerhedszonen til maskable. */
+/** Stregkode på fuldt felt. `inset` er sikkerhedszonen til maskable. */
 function drawIcon(size, inset) {
-  const { px, rect, frame } = canvas(size, PAPER);
+  const { px, rect } = canvas(size, FIELD);
   const pad = Math.round(size * inset);
   const box = size - pad * 2;
-  const thick = Math.max(2, Math.round(size * 0.035));
-
-  // Stemplets dobbeltkant.
-  frame(pad, pad, box, box, thick, INK);
-  frame(pad + thick * 2, pad + thick * 2, box - thick * 4, box - thick * 4, Math.max(1, thick / 3), INK);
 
   // Stregkode: uregelmæssige bredder, som en rigtig EAN-13.
   const widths = [3, 1, 2, 1, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 3, 1, 1, 2];
-  const unit = (box - thick * 8) / widths.reduce((a, b) => a + b + 1, 0);
-  const barTop = pad + box * 0.3;
-  const barHeight = box * 0.4;
+  const unit = box / widths.reduce((a, b) => a + b + 1, 0);
+  const barTop = pad + box * 0.26;
+  const barHeight = box * 0.42;
 
-  let x = pad + thick * 4;
+  let x = pad;
   for (const w of widths) {
-    rect(x, barTop, w * unit, barHeight, INK);
+    rect(x, barTop, w * unit, barHeight, MARK);
     x += (w + 1) * unit;
   }
 
   // Grundlinje under koden, som cifferrækken på en etiket.
-  rect(pad + thick * 4, barTop + barHeight + unit * 2, box - thick * 8, Math.max(1, unit), INK);
+  rect(pad, barTop + barHeight + unit * 3, box - unit, Math.max(2, unit), MARK);
 
   return png(size, px);
 }

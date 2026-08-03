@@ -14,7 +14,7 @@
  * De to kilder holdes adskilt hele vejen. Allergenfelter og mærkning er
  * autoritative; ingredienslisten er en læsning. Derfor har de hver deres
  * tilstande, og `heuristic` siger hvilken kilde svaret kom fra — UI'et
- * viser det med stiplet ramme, så en læsning aldrig kan forveksles med en
+ * viser det med stiplet kant, så en læsning aldrig kan forveksles med en
  * deklaration.
  *
  * Funktionen returnerer én af seks tilstande (status) plus et antal
@@ -404,8 +404,8 @@ export function assessGluten(product) {
   //    lige ud, ikke gemmes under et "data mangler". Men det er læst, ikke
   //    deklareret, og `heuristic` holder den forskel synlig hele vejen op.
   if (grains.length > 0) {
-    // Hvilke kornsorter der blev fundet, står allerede på strimlen under
-    // stemplet — noten skal sige hvor stærkt fundet vejer.
+    // Hvilke kornsorter der blev fundet, står allerede på linjen under
+    // vurderingen — noten skal sige hvor stærkt fundet vejer.
     notes.push(
       allergens.length > 0 || traces.length > 0
         ? 'Allergenfeltet nævner ikke gluten, men ingredienslisten gør. Formodningen bygger udelukkende på ord i ingredienslisten — feltet kan være ufuldstændigt.'
@@ -468,14 +468,14 @@ export function assessGluten(product) {
   return { status: STATUS.UNKNOWN, heuristic: false, notes, evidence };
 }
 
-/** Kort, entydig overskrift til stemplet. */
+/** Kort, entydig overskrift til vurderingen. */
 export const STATUS_LABEL = {
-  [STATUS.CONTAINS]: 'INDEHOLDER GLUTEN',
-  [STATUS.TRACES]: 'KAN INDEHOLDE SPOR',
-  [STATUS.FREE]: 'MÆRKET GLUTENFRI',
-  [STATUS.GRAIN]: 'KORN I LISTEN',
-  [STATUS.NO_GRAIN]: 'INGEN KORN I LISTEN',
-  [STATUS.UNKNOWN]: 'DATA MANGLER',
+  [STATUS.CONTAINS]: 'Indeholder gluten',
+  [STATUS.TRACES]: 'Kan indeholde spor',
+  [STATUS.FREE]: 'Mærket glutenfri',
+  [STATUS.GRAIN]: 'Korn i listen',
+  [STATUS.NO_GRAIN]: 'Ingen korn i listen',
+  [STATUS.UNKNOWN]: 'Data mangler',
 };
 
 /** Én sætning der siger hvad brugeren skal gøre. */

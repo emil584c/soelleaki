@@ -19,26 +19,26 @@ fundet noget. Der er "data mangler" et forkert svar — og det svar fik man før
 alt fra ost til kaffe, fordi tilstanden var opsamlingssted for alt der ikke var
 et positivt fund.
 
-Derfor findes der præcis seks tilstande, og de har hver deres stempel. De tre
+Derfor findes der præcis seks tilstande, og de har hver deres vurdering. De tre
 første kommer fra en deklaration, de to næste fra en læsning af
 ingredienslisten:
 
-| Tilstand | Kilde | Udløses af | Stempel |
+| Tilstand | Kilde | Udløses af | Vises som |
 | --- | --- | --- | --- |
-| Indeholder gluten | deklareret | `allergens_tags` indeholder `en:gluten` eller en glutenholdig kornsort | INDEHOLDER GLUTEN |
-| Kan indeholde spor | deklareret | `traces_tags` indeholder gluten, eller varen indeholder havre | KAN INDEHOLDE SPOR |
-| Mærket glutenfri | deklareret | `labels_tags` indeholder `en:gluten-free` eller tilsvarende | MÆRKET GLUTENFRI |
-| Korn i listen | læst | ingredienslisten nævner en kornsort, uden at et allergenfelt bekræfter det | KORN I LISTEN |
-| Ingen korn i listen | læst | hel, læsbar ingrediensliste gennemsøgt, ingen kornsorter og intet flertydigt led | INGEN KORN I LISTEN |
-| Data mangler | — | intet allergenfelt siger noget om gluten, og listen kan ikke bære vurderingen | DATA MANGLER |
+| Indeholder gluten | deklareret | `allergens_tags` indeholder `en:gluten` eller en glutenholdig kornsort | rød, hel kant |
+| Kan indeholde spor | deklareret | `traces_tags` indeholder gluten, eller varen indeholder havre | okker, hel kant |
+| Mærket glutenfri | deklareret | `labels_tags` indeholder `en:gluten-free` eller tilsvarende | grøn, hel kant |
+| Korn i listen | læst | ingredienslisten nævner en kornsort, uden at et allergenfelt bekræfter det | rød, stiplet kant |
+| Ingen korn i listen | læst | hel, læsbar ingrediensliste gennemsøgt, ingen kornsorter og intet flertydigt led | grøn, stiplet kant |
+| Data mangler | — | intet allergenfelt siger noget om gluten, og listen kan ikke bære vurderingen | grå, stiplet kant |
 
 `DATA MANGLER` er kun for de varer hvor der reelt ikke er noget at gå efter.
 Har vi læst en hel deklaration igennem, siger appen hvad der stod — også når
 det den fandt, var ingenting.
 
 Forskellen på de to kilder forsvinder ikke i visningen, den flytter bare fra
-ordlyd til ramme: **hel ramme om stemplet = deklareret, stiplet ramme = læst ud
-af ingredienslisten.** Farven siger hvor alvorligt det er, rammen siger hvor
+ordlyd til kant: **hel kant = deklareret, stiplet kant = læst ud af
+ingredienslisten.** Farven siger hvor alvorligt det er, kanten siger hvor
 sikkert vi ved det. Et kornfund farves desuden efter hvad der blev fundet —
 havre alene giver den milde farve, præcis som når havre står i allergenfeltet.
 
@@ -62,13 +62,13 @@ fritekstfelterne søges også i `ingredients_tags` — Open Food Facts' egen
 opsplitning af listen, normaliseret til engelsk. Det fanger kornet i de sprog
 ordbogen ikke dækker: spansk `harina de trigo` bliver til `en:wheat-flour`.
 
-Et **fund** af korn stemples med det samme — stiplet, og med en strimmel under
-stemplet der siger præcis hvilket ord der blev fundet hvor. At kalde et rugbrød
-for "data mangler", fordi rugen stod i ingredienslisten og ikke i et
+Et **fund** af korn vises med det samme — stiplet, og med en linje under
+vurderingen der siger præcis hvilket ord der blev fundet hvor. At kalde et
+rugbrød for "data mangler", fordi rugen stod i ingredienslisten og ikke i et
 allergenfelt, hjælper ingen.
 
 Et **manglende** fund vejer mindre og skal derfor igennem tre spærringer, før
-det får sit eget stempel:
+det får sin egen vurdering:
 
 1. listen skal være på et sprog vi kan læse — enten et sprogmærket felt, et
    originalsprogsfelt hvor `lang` er et af vores sprog, eller en liste Open Food

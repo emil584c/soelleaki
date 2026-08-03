@@ -17,7 +17,7 @@ export default function AboutView() {
     <section className="card">
       <h2 className="card__head">Om</h2>
 
-      <h3 className="sub">Sådan læses stemplet</h3>
+      <h3 className="sub">Sådan læses vurderingen</h3>
       <dl className="legend">
         <div>
           <dt>Indeholder gluten</dt>
@@ -35,7 +35,7 @@ export default function AboutView() {
           <dt>Korn i listen</dt>
           <dd>
             Ingredienslisten nævner hvede, rug, byg, havre eller lignende, men intet allergenfelt
-            bekræfter det. Strimlen under stemplet siger hvad der blev fundet.
+            bekræfter det. Linjen under vurderingen siger hvad der blev fundet.
           </dd>
         </div>
         <div>
@@ -55,8 +55,8 @@ export default function AboutView() {
         </div>
       </dl>
       <p className="body">
-        Farven siger hvor alvorligt det er, rammen hvor sikkert vi ved det: <strong>hel ramme</strong>{' '}
-        betyder at svaret står i et allergenfelt eller en mærkning, <strong>stiplet ramme</strong> at
+        Farven siger hvor alvorligt det er, kanten hvor sikkert vi ved det: <strong>hel kant</strong>{' '}
+        betyder at svaret står i et allergenfelt eller en mærkning, <strong>stiplet kant</strong> at
         det er læst ud af ingredienslisten. En ingrediensliste kan mangle noget — et allergenfelt er
         nogen der har taget stilling.
       </p>

@@ -1,34 +1,58 @@
 /*
-  Visuel identitet: en gammeldags varedeklaration / fødevarekontrol-blanket.
-  Papir, tryksværte, hårlinjer og ét stempel. Ikke en moderne app-flade.
+  Visuel identitet: en moderne, flad app-flade. Rene hvide kort på en
+  neutral grå baggrund, systemets egen sans-serif, bløde hjørner og farve
+  kun der hvor den betyder noget.
 
   Tre regler holdes i hele filen:
-    · kun serif og slab-serif — ingen sans-serif nogen steder, heller ikke
-      i labels, hjælpetekst eller tal;
+    · kun sans-serif — systemstakken, så der aldrig hentes en webfont og
+      teksten står med det samme, også offline;
     · ingen gradients;
-    · ingen skygger — hverken på tekst eller som "elevation". Dybde laves
-      med hårlinjer, dobbeltkanter og trykfarve.
+    · ingen skygger. Fladt vil sige fladt: dybde laves med flader, 1px
+      kanter og luft — ikke med "elevation".
+
+  Farve er reserveret til vurderingen. Resten af fladen er neutral, så
+  status er det eneste der lyser.
 */
 
 :root {
-  /* Papir og sværte. Manila-agtig, køligere og mere grå end creme. */
-  --paper: #d6d0ba;
-  --paper-card: #e7e2d0;
-  --paper-inset: #ded8c5;
-  --ink: #1e1d19;
-  --ink-soft: #514e45;
-  --rule: #a49c84;
-  --rule-faint: #bdb69e;
+  /* Neutral gråskala. */
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --surface-sunken: #f9fafb;
+  --border: #e4e7ec;
+  --border-strong: #d0d5dd;
+  --text: #101828;
+  --text-muted: #667085;
+  --text-disabled: #98a2b3;
 
-  /* Én advarselsfarve, én sikker farve, én mellemting. Ingen neon. */
-  --danger: #8a1c17; /* oksblod, ikke terracotta */
-  --warn: #75570d; /* mørk okker */
-  --safe: #1f5138; /* flaskegrøn */
+  /*
+    Semantiske farver som par: en mættet tekstfarve og en meget lys flade
+    at sætte den på. Alle fire par er kontrolleret for kontrast mod deres
+    egen baggrund (≥ 4.5:1), så de kan bruges som store flader.
+  */
+  --danger: #b42318;
+  --danger-bg: #fef3f2;
+  --danger-line: #fda29b;
 
-  --font-body: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia,
-    'Noto Serif', 'Times New Roman', serif;
-  --font-stamp: Rockwell, 'Bookman Old Style', 'Bitstream Charter', Charter, Georgia, 'Noto Serif',
-    serif;
+  --warn: #b54708;
+  --warn-bg: #fffaeb;
+  --warn-line: #fec84b;
+
+  --safe: #027a48;
+  --safe-bg: #ecfdf3;
+  --safe-line: #6ce9a6;
+
+  --void: #475467;
+  --void-bg: #f9fafb;
+  --void-line: #d0d5dd;
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    sans-serif;
+
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 16px;
+  --r-pill: 999px;
 
   --gap: 1rem;
 }
@@ -44,28 +68,30 @@ body {
 }
 
 body {
-  background-color: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 17px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Ingen skygger: alt fokus markeres med en tydelig, flad kant. */
+/* Ingen skygger: fokus markeres med en tydelig, flad ring. */
 :focus-visible {
-  outline: 2px dashed var(--ink);
+  outline: 2px solid var(--text);
   outline-offset: 2px;
+  border-radius: var(--r-sm);
 }
 
-/* ---------- Ark ---------- */
+/* ---------- Ramme ---------- */
 
 .sheet {
   max-width: 33rem;
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: env(safe-area-inset-top) 0.75rem env(safe-area-inset-bottom);
+  padding: env(safe-area-inset-top) 0.9rem env(safe-area-inset-bottom);
   display: flex;
   flex-direction: column;
 }
@@ -76,81 +102,78 @@ body {
 }
 
 .sheet__foot {
-  border-top: 1px solid var(--rule);
-  padding: 0.75rem 0 1.25rem;
+  border-top: 1px solid var(--border);
+  padding: 1rem 0 1.5rem;
 }
 
 /* ---------- Hoved ---------- */
 
 .masthead {
-  border-bottom: 3px double var(--ink);
-  padding-top: 1.1rem;
+  padding-top: 1.25rem;
 }
 
 .masthead__title h1 {
-  font-family: var(--font-stamp);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .masthead__sub {
-  font-size: 0.8rem;
-  font-style: italic;
-  color: var(--ink-soft);
-  margin: 0.15rem 0 0.7rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0.15rem 0 1rem;
 }
 
+/* Segmenteret kontrol: én grå bane, aktiv fane som hvid pille. */
 .tabs {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.25rem;
+  background-color: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 0.25rem;
 }
 
 .tab {
   flex: 1;
   appearance: none;
   background: transparent;
-  border: 1px solid var(--rule);
-  border-bottom: none;
-  color: var(--ink-soft);
-  font-family: var(--font-stamp);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.5rem 0.3rem;
+  border: none;
+  border-radius: var(--r-pill);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0.4rem;
   cursor: pointer;
 }
 
 .tab--on {
-  background-color: var(--paper-card);
-  border-color: var(--ink);
-  color: var(--ink);
-  font-weight: 700;
+  background-color: var(--surface);
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* ---------- Kort ---------- */
 
 .card {
-  background-color: var(--paper-card);
-  border: 1px solid var(--ink);
-  padding: 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.25rem;
 }
 
 .card__head {
-  font-family: var(--font-stamp);
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin: 0 0 0.85rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--rule);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
 }
 
 .card__headrow {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
@@ -160,136 +183,146 @@ body {
 }
 
 .sub {
-  font-family: var(--font-stamp);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin: 1.4rem 0 0.4rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.75rem 0 0.5rem;
 }
 
-/* ---------- Stempel ---------- */
+/* ---------- Vurdering ---------- */
 
+/*
+  Stemplet er blevet et statusfelt, men de to akser er de samme:
+
+    farven  hvor alvorligt det er;
+    kanten  hvor svaret kommer fra — hel kant er et allergenfelt eller en
+            mærkning, stiplet kant er læst ud af ingredienslisten.
+*/
 .stamp {
-  margin: 1.1rem 0 1.2rem;
-  text-align: center;
+  margin: 0.25rem 0 1.25rem;
 }
 
 .stamp__box {
-  display: inline-block;
-  max-width: 100%;
-  transform: rotate(-2.5deg);
-  border: 3px solid currentColor;
-  padding: 0.6rem 1.4rem 0.7rem;
-  position: relative;
-  color: var(--ink-soft);
-}
-
-/* Indre hårlinje — stemplets dobbeltkant, uden brug af skygge. */
-.stamp__box::before {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border: 1px solid currentColor;
-  pointer-events: none;
+  border: 2px solid var(--void-line);
+  border-radius: var(--r-lg);
+  background-color: var(--void-bg);
+  color: var(--void);
+  padding: 1rem 1.1rem 1.1rem;
 }
 
 .stamp__kicker {
-  font-family: var(--font-stamp);
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin: 0 0 0.15rem;
+  opacity: 0.75;
+  margin: 0 0 0.25rem;
 }
 
 .stamp__label {
-  font-family: var(--font-stamp);
-  /* Skalerer med skærmen, så teksten aldrig bryder stemplets ramme. */
-  font-size: clamp(1.02rem, 5vw, 1.32rem);
+  font-size: clamp(1.375rem, 6.5vw, 1.75rem);
   font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
   line-height: 1.15;
   margin: 0;
 }
 
-/* Handlingslinjen må ikke gøre stemplet bredere end etiketten — den
-   ombrydes i stedet inde i rammen. */
 .stamp__action {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-style: italic;
-  max-width: 15rem;
-  margin: 0.35rem auto 0;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  margin: 0.4rem 0 0;
   color: inherit;
+  opacity: 0.9;
 }
 
 .stamp--danger .stamp__box {
+  border-color: var(--danger-line);
+  background-color: var(--danger-bg);
   color: var(--danger);
 }
+
 .stamp--warn .stamp__box {
+  border-color: var(--warn-line);
+  background-color: var(--warn-bg);
   color: var(--warn);
 }
+
 .stamp--safe .stamp__box {
+  border-color: var(--safe-line);
+  background-color: var(--safe-bg);
   color: var(--safe);
 }
-.stamp--void .stamp__box {
-  color: var(--ink-soft);
-}
 
-/* Anden akse end farven: stiplet ramme = læst ud af ingredienslisten,
-   ikke stemplet af et allergenfelt. Gælder også den tomme tilstand. */
+/* Anden akse end farven: stiplet kant = læst ud af ingredienslisten,
+   ikke bekræftet af et allergenfelt. Gælder også den tomme tilstand. */
 .stamp--unconfirmed .stamp__box,
-.stamp--unconfirmed .stamp__box::before,
-.stamp--void .stamp__box,
-.stamp--void .stamp__box::before {
+.stamp--void .stamp__box {
   border-style: dashed;
 }
 
-/* Formodningen hænges under stemplet — aldrig som stempel i sig selv. */
+/* Grundlaget hænges under feltet — aldrig som vurdering i sig selv. */
 .stamp__strip {
-  max-width: 26rem;
-  margin: 0.9rem auto 0;
-  border: 1px dashed var(--warn);
-  color: var(--warn);
-  font-size: 0.78rem;
-  font-style: italic;
-  padding: 0.4rem 0.6rem;
+  display: flex;
+  gap: 0.5rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r);
+  background-color: var(--surface-sunken);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  padding: 0.6rem 0.75rem;
+  margin: 0.5rem 0 0;
 }
 
-/* Miniature-stempel til historikken. */
+.stamp__strip::before {
+  content: '↑';
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+/* Statusmærke til historikken. Fast bredde, så navnene står på linje. */
 .mini {
   flex: 0 0 auto;
-  min-width: 4.6rem;
-  border: 2px solid currentColor;
-  color: var(--ink-soft);
-  font-family: var(--font-stamp);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 0.25rem 0.2rem;
-  transform: rotate(-2deg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-width: 5.75rem;
+  border: 1px solid var(--void-line);
+  border-radius: var(--r-pill);
+  background-color: var(--void-bg);
+  color: var(--void);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.2rem 0.6rem;
 }
 
 .mini--danger {
+  border-color: var(--danger-line);
+  background-color: var(--danger-bg);
   color: var(--danger);
 }
+
 .mini--warn {
+  border-color: var(--warn-line);
+  background-color: var(--warn-bg);
   color: var(--warn);
 }
+
 .mini--safe {
+  border-color: var(--safe-line);
+  background-color: var(--safe-bg);
   color: var(--safe);
 }
+
 .mini--unconfirmed,
 .mini--void {
   border-style: dashed;
 }
 
 .mini__mark {
-  font-size: 0.8rem;
-  line-height: 0;
+  font-weight: 700;
 }
 
 /* ---------- Kameravisning ---------- */
@@ -297,14 +330,15 @@ body {
 .viewport {
   position: relative;
   aspect-ratio: 4 / 3;
-  background-color: var(--paper-inset);
-  border: 1px solid var(--rule);
+  background-color: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
 .viewport--live {
-  background-color: var(--ink);
-  border-color: var(--ink);
+  background-color: var(--text);
+  border-color: var(--text);
 }
 
 /*
@@ -326,13 +360,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  color: var(--text-muted);
   margin: 0;
 }
 
-/* Sigtemærke som et par beskæringsmærker fra trykkeriet. */
+/* Sigtemærke: fire bløde hjørner. */
 .viewport__frame {
   position: absolute;
   inset: 22% 12%;
@@ -342,9 +375,9 @@ body {
 .viewport__frame::after {
   content: '';
   position: absolute;
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid var(--paper);
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 3px solid #ffffff;
 }
 
 .viewport__frame::before {
@@ -352,6 +385,7 @@ body {
   left: 0;
   border-right: none;
   border-bottom: none;
+  border-top-left-radius: var(--r);
 }
 
 .viewport__frame::after {
@@ -359,262 +393,259 @@ body {
   bottom: 0;
   border-left: none;
   border-top: none;
+  border-bottom-right-radius: var(--r);
 }
 
 /* ---------- Knapper ---------- */
 
 .btn {
   appearance: none;
-  background-color: var(--paper-card);
-  border: 2px solid var(--ink);
-  color: var(--ink);
-  font-family: var(--font-stamp);
-  font-size: 0.74rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.6rem 0.9rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
   cursor: pointer;
 }
 
 .btn:disabled {
-  border-color: var(--rule);
-  color: var(--rule);
+  border-color: var(--border);
+  color: var(--text-disabled);
   cursor: not-allowed;
 }
 
 .btn--primary {
-  background-color: var(--ink);
-  color: var(--paper-card);
-  font-weight: 700;
+  background-color: var(--text);
+  border-color: var(--text);
+  color: #ffffff;
 }
 
 .btn--primary:disabled {
-  background-color: var(--paper-card);
+  background-color: var(--surface-sunken);
+  border-color: var(--border);
+  color: var(--text-disabled);
 }
 
 .btn--wide {
   display: block;
   width: 100%;
-  margin-top: 0.9rem;
+  margin-top: 1rem;
+  border-radius: var(--r);
   padding-block: 0.85rem;
-  font-size: 0.86rem;
+  font-size: 1rem;
 }
 
 .btn--quiet {
+  background: transparent;
   border: none;
-  border-bottom: 1px solid var(--ink);
-  padding: 0.1rem 0;
-  font-size: 0.68rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0.2rem;
 }
 
 .confirm {
   display: flex;
-  gap: 0.7rem;
+  gap: 0.4rem;
 }
 
 /* ---------- Tekstelementer ---------- */
 
 .code {
-  font-family: var(--font-stamp);
-  font-size: 1.05rem;
-  letter-spacing: 0.22em;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   font-variant-numeric: tabular-nums;
-  margin: 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px dotted var(--rule);
+  color: var(--text-muted);
+  margin: 0 0 1rem;
 }
 
 .hint {
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--ink-soft);
-  margin: 0.7rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0.85rem 0 0;
 }
 
 .body {
-  font-size: 0.92rem;
-  margin: 0.4rem 0 0;
+  font-size: 0.9375rem;
+  margin: 0.5rem 0 0;
 }
 
 .notice {
-  border: 1px solid var(--rule);
-  border-left: 3px solid var(--ink);
-  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background-color: var(--surface-sunken);
+  padding: 0.9rem 1rem;
   margin-top: 1rem;
-  font-size: 0.88rem;
+  font-size: 0.9375rem;
 }
 
 .notice strong {
-  font-family: var(--font-stamp);
-  font-size: 0.72rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
   display: block;
-  margin-bottom: 0.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 .notice p {
   margin: 0.4rem 0 0;
 }
 
-.notice--warn {
-  border-left-color: var(--danger);
-  color: var(--ink);
+.notice p:last-child {
+  margin-bottom: 0;
 }
 
-.notice--warn strong {
+.notice--warn {
+  border-color: var(--danger-line);
+  background-color: var(--danger-bg);
   color: var(--danger);
 }
 
+.notice--warn .btn {
+  margin-top: 0.75rem;
+}
+
 .notice code {
-  font-family: var(--font-stamp);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.9em;
 }
 
 .notes {
-  margin: 1rem 0 0;
+  margin: 1.25rem 0 0;
   padding-left: 1.1rem;
-  font-size: 0.86rem;
-  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  color: var(--text-muted);
 }
 
 .notes li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
 }
 
 .reserve {
-  margin: 1.2rem 0 0;
-  padding-top: 0.7rem;
-  border-top: 1px dotted var(--rule);
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--ink-soft);
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 .source {
-  margin: 0.7rem 0 0;
-  font-size: 0.84rem;
+  margin: 0.9rem 0 0;
+  font-size: 0.9375rem;
 }
 
 .link {
-  color: var(--ink);
+  color: var(--text);
+  font-weight: 500;
   text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
 .fineprint {
-  font-size: 0.74rem;
-  color: var(--ink-soft);
-  margin: 0.4rem 0 0;
-  line-height: 1.45;
-}
-
-.fineprint--credit .src {
-  font-variant: small-caps;
-  letter-spacing: 0.04em;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0.5rem 0 0;
+  line-height: 1.5;
 }
 
 /* ---------- Produkt ---------- */
 
 .product {
   display: flex;
-  gap: 0.8rem;
-  align-items: flex-start;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid var(--rule-faint);
+  gap: 0.9rem;
+  align-items: center;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .product__img {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  border: 1px solid var(--rule);
-  background-color: var(--paper-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background-color: var(--surface-sunken);
 }
 
 .product__name {
-  font-size: 1.12rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   margin: 0;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
 .product__brand {
-  font-size: 0.84rem;
-  font-style: italic;
-  color: var(--ink-soft);
-  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0.1rem 0 0;
 }
 
 /* ---------- Feltoversigt ---------- */
 
 .fields {
-  margin: 1rem 0 0;
-  border-top: 1px solid var(--rule-faint);
+  margin: 1.25rem 0 0;
 }
 
 .fields__row {
   display: flex;
-  gap: 0.8rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px dotted var(--rule-faint);
+  gap: 0.9rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .fields dt {
-  flex: 0 0 6.2rem;
-  font-family: var(--font-stamp);
-  font-size: 0.66rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding-top: 0.15rem;
-  color: var(--ink-soft);
+  flex: 0 0 7rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 .fields dd {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  min-width: 0;
 }
 
 .fields__empty {
-  font-style: italic;
-  color: var(--ink-soft);
+  color: var(--text-muted);
 }
 
 .details {
-  margin-top: 1rem;
-  border-top: 1px solid var(--rule-faint);
-  padding-top: 0.6rem;
+  margin-top: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.75rem 0.9rem;
 }
 
 .details summary {
-  font-family: var(--font-stamp);
-  font-size: 0.68rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .ingredients {
-  font-size: 0.86rem;
-  margin: 0.5rem 0 0;
-  color: var(--ink-soft);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
 }
 
 /* ---------- Manuel indtastning ---------- */
 
 .manual {
-  margin-top: 1.4rem;
-  padding-top: 0.9rem;
-  border-top: 1px dotted var(--rule);
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
 }
 
 .manual__label {
   display: block;
-  font-family: var(--font-stamp);
-  font-size: 0.66rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
 }
 
 .manual__row {
@@ -625,26 +656,25 @@ body {
 .manual__input {
   flex: 1;
   min-width: 0;
-  background-color: var(--paper-inset);
-  border: 1px solid var(--ink);
-  color: var(--ink);
-  font-family: var(--font-stamp);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
   font-size: 1rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
-  padding: 0.55rem 0.6rem;
+  padding: 0.55rem 0.75rem;
 }
 
 .manual__input::placeholder {
-  color: var(--rule);
-  letter-spacing: 0.16em;
+  color: var(--text-disabled);
 }
 
 .manual__warn {
-  font-size: 0.78rem;
-  font-style: italic;
+  font-size: 0.875rem;
   color: var(--warn);
-  margin: 0.4rem 0 0;
+  margin: 0.5rem 0 0;
 }
 
 /* ---------- Historik ---------- */
@@ -653,24 +683,29 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--rule-faint);
 }
 
 .log__row {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  border-bottom: 1px dotted var(--rule-faint);
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.log__row:first-child {
+  border-top: 1px solid var(--border);
 }
 
 .log__open {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.75rem;
+  min-width: 0;
   background: transparent;
   border: none;
-  padding: 0.6rem 0;
+  border-radius: var(--r-sm);
+  padding: 0.75rem 0.25rem;
   text-align: left;
   color: inherit;
   font-family: inherit;
@@ -684,60 +719,68 @@ body {
 }
 
 .log__name {
-  font-size: 0.95rem;
-  line-height: 1.25;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Samme afkortning som navnet, så rækkerne bliver lige høje. */
 .log__meta {
-  font-size: 0.74rem;
-  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .log__del {
   background: transparent;
   border: none;
-  color: var(--ink-soft);
-  font-family: var(--font-body);
-  font-size: 1.3rem;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 1.35rem;
   line-height: 1;
-  padding: 0.3rem 0.4rem;
+  padding: 0.35rem 0.5rem;
   cursor: pointer;
 }
 
 /* ---------- Om-siden ---------- */
 
 .legend {
-  margin: 0.3rem 0 0;
+  margin: 0.5rem 0 0;
 }
 
 .legend > div {
-  padding: 0.45rem 0;
-  border-bottom: 1px dotted var(--rule-faint);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.legend > div:first-child {
+  border-top: 1px solid var(--border);
 }
 
 .legend dt {
-  font-family: var(--font-stamp);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.9375rem;
+  font-weight: 600;
 }
 
 .legend dd {
-  margin: 0.15rem 0 0;
-  font-size: 0.86rem;
-  color: var(--ink-soft);
+  margin: 0.2rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 @media (min-width: 34rem) {
-  body {
-    font-size: 18px;
+  .sheet {
+    padding-inline: 1.25rem;
   }
 
   .card {
-    padding: 1.3rem;
+    padding: 1.5rem;
   }
 }

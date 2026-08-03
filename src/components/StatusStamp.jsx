@@ -1,17 +1,17 @@
 import { STATUS, STATUS_ACTION, STATUS_LABEL } from '../lib/glutenStatus.js';
 
 /**
- * Appens signaturelement: resultatet som et fysisk godkendelses- eller
- * afvisningsstempel snarere end et farvet badge.
+ * Appens signaturelement: vurderingen som ét stort statusfelt, det første
+ * øjet lander på.
  *
- * Stemplet har to akser, og de skal holdes fra hinanden:
+ * Feltet har to akser, og de skal holdes fra hinanden:
  *
  *   farven  hvor alvorligt det er;
- *   rammen  hvor svaret kommer fra — hel ramme er et allergenfelt eller en
- *           mærkning, stiplet ramme er læst ud af ingredienslisten.
+ *   kanten  hvor svaret kommer fra — hel kant er et allergenfelt eller en
+ *           mærkning, stiplet kant er læst ud af ingredienslisten.
  *
- * Derfor kan en læsning godt få sit eget stempel. Den kan bare aldrig se
- * ud som en deklaration.
+ * Derfor kan en læsning godt få sit eget felt. Den kan bare aldrig se ud
+ * som en deklaration.
  */
 export default function StatusStamp({ status, heuristic = false, grains = [], size = 'full' }) {
   const tone = toneFor(status, grains);
@@ -70,10 +70,10 @@ function toneFor(status, grains) {
 }
 
 const MINI_LABEL = {
-  [STATUS.CONTAINS]: 'GLUTEN',
-  [STATUS.TRACES]: 'SPOR',
-  [STATUS.FREE]: 'FRI',
-  [STATUS.GRAIN]: 'KORN',
-  [STATUS.NO_GRAIN]: 'INGEN KORN',
-  [STATUS.UNKNOWN]: 'UKENDT',
+  [STATUS.CONTAINS]: 'Gluten',
+  [STATUS.TRACES]: 'Spor',
+  [STATUS.FREE]: 'Fri',
+  [STATUS.GRAIN]: 'Korn',
+  [STATUS.NO_GRAIN]: 'Ingen korn',
+  [STATUS.UNKNOWN]: 'Ukendt',
 };
