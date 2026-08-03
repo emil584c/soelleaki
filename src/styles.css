@@ -1,0 +1,737 @@
+/*
+  Visuel identitet: en gammeldags varedeklaration / fødevarekontrol-blanket.
+  Papir, tryksværte, hårlinjer og ét stempel. Ikke en moderne app-flade.
+
+  Tre regler holdes i hele filen:
+    · kun serif og slab-serif — ingen sans-serif nogen steder, heller ikke
+      i labels, hjælpetekst eller tal;
+    · ingen gradients;
+    · ingen skygger — hverken på tekst eller som "elevation". Dybde laves
+      med hårlinjer, dobbeltkanter og trykfarve.
+*/
+
+:root {
+  /* Papir og sværte. Manila-agtig, køligere og mere grå end creme. */
+  --paper: #d6d0ba;
+  --paper-card: #e7e2d0;
+  --paper-inset: #ded8c5;
+  --ink: #1e1d19;
+  --ink-soft: #514e45;
+  --rule: #a49c84;
+  --rule-faint: #bdb69e;
+
+  /* Én advarselsfarve, én sikker farve, én mellemting. Ingen neon. */
+  --danger: #8a1c17; /* oksblod, ikke terracotta */
+  --warn: #75570d; /* mørk okker */
+  --safe: #1f5138; /* flaskegrøn */
+
+  --font-body: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia,
+    'Noto Serif', 'Times New Roman', serif;
+  --font-stamp: Rockwell, 'Bookman Old Style', 'Bitstream Charter', Charter, Georgia, 'Noto Serif',
+    serif;
+
+  --gap: 1rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Ingen skygger: alt fokus markeres med en tydelig, flad kant. */
+:focus-visible {
+  outline: 2px dashed var(--ink);
+  outline-offset: 2px;
+}
+
+/* ---------- Ark ---------- */
+
+.sheet {
+  max-width: 33rem;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) 0.75rem env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet__body {
+  flex: 1;
+  padding: var(--gap) 0;
+}
+
+.sheet__foot {
+  border-top: 1px solid var(--rule);
+  padding: 0.75rem 0 1.25rem;
+}
+
+/* ---------- Hoved ---------- */
+
+.masthead {
+  border-bottom: 3px double var(--ink);
+  padding-top: 1.1rem;
+}
+
+.masthead__title h1 {
+  font-family: var(--font-stamp);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.masthead__sub {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.15rem 0 0.7rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tab {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-bottom: none;
+  color: var(--ink-soft);
+  font-family: var(--font-stamp);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.3rem;
+  cursor: pointer;
+}
+
+.tab--on {
+  background-color: var(--paper-card);
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ---------- Kort ---------- */
+
+.card {
+  background-color: var(--paper-card);
+  border: 1px solid var(--ink);
+  padding: 1rem;
+}
+
+.card__head {
+  font-family: var(--font-stamp);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.card__headrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.card__headrow .card__head {
+  flex: 1;
+}
+
+.sub {
+  font-family: var(--font-stamp);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 1.4rem 0 0.4rem;
+}
+
+/* ---------- Stempel ---------- */
+
+.stamp {
+  margin: 1.1rem 0 1.2rem;
+  text-align: center;
+}
+
+.stamp__box {
+  display: inline-block;
+  max-width: 100%;
+  transform: rotate(-2.5deg);
+  border: 3px solid currentColor;
+  padding: 0.6rem 1.4rem 0.7rem;
+  position: relative;
+  color: var(--ink-soft);
+}
+
+/* Indre hårlinje — stemplets dobbeltkant, uden brug af skygge. */
+.stamp__box::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid currentColor;
+  pointer-events: none;
+}
+
+.stamp__kicker {
+  font-family: var(--font-stamp);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin: 0 0 0.15rem;
+}
+
+.stamp__label {
+  font-family: var(--font-stamp);
+  /* Skalerer med skærmen, så teksten aldrig bryder stemplets ramme. */
+  font-size: clamp(1.02rem, 5vw, 1.32rem);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* Handlingslinjen må ikke gøre stemplet bredere end etiketten — den
+   ombrydes i stedet inde i rammen. */
+.stamp__action {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-style: italic;
+  max-width: 15rem;
+  margin: 0.35rem auto 0;
+  color: inherit;
+}
+
+.stamp--danger .stamp__box {
+  color: var(--danger);
+}
+.stamp--warn .stamp__box {
+  color: var(--warn);
+}
+.stamp--safe .stamp__box {
+  color: var(--safe);
+}
+.stamp--void .stamp__box {
+  color: var(--ink-soft);
+  border-style: dashed;
+}
+.stamp--void .stamp__box::before {
+  border-style: dashed;
+}
+
+/* Formodningen hænges under stemplet — aldrig som stempel i sig selv. */
+.stamp__strip {
+  max-width: 26rem;
+  margin: 0.9rem auto 0;
+  border: 1px dashed var(--warn);
+  color: var(--warn);
+  font-size: 0.78rem;
+  font-style: italic;
+  padding: 0.4rem 0.6rem;
+}
+
+/* Miniature-stempel til historikken. */
+.mini {
+  flex: 0 0 auto;
+  min-width: 4.6rem;
+  border: 2px solid currentColor;
+  color: var(--ink-soft);
+  font-family: var(--font-stamp);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.25rem 0.2rem;
+  transform: rotate(-2deg);
+}
+
+.mini--danger {
+  color: var(--danger);
+}
+.mini--warn {
+  color: var(--warn);
+}
+.mini--safe {
+  color: var(--safe);
+}
+.mini--void {
+  border-style: dashed;
+}
+
+.mini__mark {
+  font-size: 0.8rem;
+  line-height: 0;
+}
+
+/* ---------- Kameravisning ---------- */
+
+.viewport {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: var(--paper-inset);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.viewport--live {
+  background-color: var(--ink);
+  border-color: var(--ink);
+}
+
+/*
+  Videoen skjules aldrig med display: none — Chrome kan holde op med at
+  dekode billeder i et skjult videoelement, og så ville detektoren sulte.
+  Den ligger i stedet altid i laget og er blot tom indtil kameraet kører.
+*/
+.viewport__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.viewport__idle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Sigtemærke som et par beskæringsmærker fra trykkeriet. */
+.viewport__frame {
+  position: absolute;
+  inset: 22% 12%;
+}
+
+.viewport__frame::before,
+.viewport__frame::after {
+  content: '';
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--paper);
+}
+
+.viewport__frame::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.viewport__frame::after {
+  right: 0;
+  bottom: 0;
+  border-left: none;
+  border-top: none;
+}
+
+/* ---------- Knapper ---------- */
+
+.btn {
+  appearance: none;
+  background-color: var(--paper-card);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-stamp);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  border-color: var(--rule);
+  color: var(--rule);
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background-color: var(--ink);
+  color: var(--paper-card);
+  font-weight: 700;
+}
+
+.btn--primary:disabled {
+  background-color: var(--paper-card);
+}
+
+.btn--wide {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  padding-block: 0.85rem;
+  font-size: 0.86rem;
+}
+
+.btn--quiet {
+  border: none;
+  border-bottom: 1px solid var(--ink);
+  padding: 0.1rem 0;
+  font-size: 0.68rem;
+}
+
+.confirm {
+  display: flex;
+  gap: 0.7rem;
+}
+
+/* ---------- Tekstelementer ---------- */
+
+.code {
+  font-family: var(--font-stamp);
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dotted var(--rule);
+}
+
+.hint {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.7rem 0 0;
+}
+
+.body {
+  font-size: 0.92rem;
+  margin: 0.4rem 0 0;
+}
+
+.notice {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ink);
+  padding: 0.7rem 0.8rem;
+  margin-top: 1rem;
+  font-size: 0.88rem;
+}
+
+.notice strong {
+  font-family: var(--font-stamp);
+  font-size: 0.72rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.notice p {
+  margin: 0.4rem 0 0;
+}
+
+.notice--warn {
+  border-left-color: var(--danger);
+  color: var(--ink);
+}
+
+.notice--warn strong {
+  color: var(--danger);
+}
+
+.notice code {
+  font-family: var(--font-stamp);
+  font-size: 0.9em;
+}
+
+.notes {
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+.notes li {
+  margin-bottom: 0.35rem;
+}
+
+.reserve {
+  margin: 1.2rem 0 0;
+  padding-top: 0.7rem;
+  border-top: 1px dotted var(--rule);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.source {
+  margin: 0.7rem 0 0;
+  font-size: 0.84rem;
+}
+
+.link {
+  color: var(--ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.fineprint {
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  margin: 0.4rem 0 0;
+  line-height: 1.45;
+}
+
+.fineprint--credit .src {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Produkt ---------- */
+
+.product {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--rule-faint);
+}
+
+.product__img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-inset);
+}
+
+.product__name {
+  font-size: 1.12rem;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.product__brand {
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  margin: 0.15rem 0 0;
+}
+
+/* ---------- Feltoversigt ---------- */
+
+.fields {
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--rule-faint);
+}
+
+.fields__row {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dotted var(--rule-faint);
+}
+
+.fields dt {
+  flex: 0 0 6.2rem;
+  font-family: var(--font-stamp);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+  color: var(--ink-soft);
+}
+
+.fields dd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.fields__empty {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.details {
+  margin-top: 1rem;
+  border-top: 1px solid var(--rule-faint);
+  padding-top: 0.6rem;
+}
+
+.details summary {
+  font-family: var(--font-stamp);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ingredients {
+  font-size: 0.86rem;
+  margin: 0.5rem 0 0;
+  color: var(--ink-soft);
+}
+
+/* ---------- Manuel indtastning ---------- */
+
+.manual {
+  margin-top: 1.4rem;
+  padding-top: 0.9rem;
+  border-top: 1px dotted var(--rule);
+}
+
+.manual__label {
+  display: block;
+  font-family: var(--font-stamp);
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+}
+
+.manual__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.manual__input {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--paper-inset);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-stamp);
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums;
+  padding: 0.55rem 0.6rem;
+}
+
+.manual__input::placeholder {
+  color: var(--rule);
+  letter-spacing: 0.16em;
+}
+
+.manual__warn {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--warn);
+  margin: 0.4rem 0 0;
+}
+
+/* ---------- Historik ---------- */
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule-faint);
+}
+
+.log__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px dotted var(--rule-faint);
+}
+
+.log__open {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: transparent;
+  border: none;
+  padding: 0.6rem 0;
+  text-align: left;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.log__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.log__name {
+  font-size: 0.95rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log__meta {
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.log__del {
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+}
+
+/* ---------- Om-siden ---------- */
+
+.legend {
+  margin: 0.3rem 0 0;
+}
+
+.legend > div {
+  padding: 0.45rem 0;
+  border-bottom: 1px dotted var(--rule-faint);
+}
+
+.legend dt {
+  font-family: var(--font-stamp);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.legend dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 34rem) {
+  body {
+    font-size: 18px;
+  }
+
+  .card {
+    padding: 1.3rem;
+  }
+}

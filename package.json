@@ -1,0 +1,24 @@
+{
+  "name": "soelleaki",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Offline-first PWA der scanner stregkoder og viser gluten-/allergenstatus fra Open Food Facts. Alt data bliver på enheden.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.10"
+  }
+}
