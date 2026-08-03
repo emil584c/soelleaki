@@ -18,6 +18,19 @@ const FIELDS = [
   'quantity',
   'ingredients_text',
   'ingredients_text_da',
+  'ingredients_text_en',
+  'ingredients_text_sv',
+  'ingredients_text_de',
+  'ingredients_text_fr',
+  // Open Food Facts' egen opsplitning af ingredienslisten, normaliseret til
+  // engelske tags. Fanger kornsorter på sprog vores ordbog ikke dækker.
+  'ingredients_tags',
+  // Bruges til at afgøre om listen er en hel deklaration eller en stump.
+  'ingredients_n',
+  'unknown_ingredients_n',
+  'states_tags',
+  // Hvilket sprog originalteksten er på — afgør om vi kan læse listen.
+  'lang',
   'allergens_tags',
   'traces_tags',
   'labels_tags',
@@ -100,7 +113,12 @@ export function productTitle(product) {
 }
 
 export function ingredientsText(product) {
-  return product?.ingredients_text_da?.trim() || product?.ingredients_text?.trim() || '';
+  return (
+    product?.ingredients_text_da?.trim() ||
+    product?.ingredients_text?.trim() ||
+    product?.ingredients_text_en?.trim() ||
+    ''
+  );
 }
 
 /**

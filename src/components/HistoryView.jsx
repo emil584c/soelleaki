@@ -51,7 +51,12 @@ export default function HistoryView({ entries, onOpen, onChanged }) {
           {entries.map((entry) => (
             <li key={entry.id} className="log__row">
               <button type="button" className="log__open" onClick={() => onOpen(entry)}>
-                <StatusStamp status={entry.status} heuristic={entry.heuristic} size="mini" />
+                <StatusStamp
+                  status={entry.status}
+                  heuristic={entry.heuristic}
+                  grains={entry.grains}
+                  size="mini"
+                />
                 <span className="log__text">
                   <span className="log__name">{entry.found ? entry.name : 'Ikke i databasen'}</span>
                   <span className="log__meta">
@@ -74,7 +79,9 @@ export default function HistoryView({ entries, onOpen, onChanged }) {
         </ol>
       )}
 
-      <p className="fineprint">* = formodning ud fra ingrediensliste, ikke et allergenfelt.</p>
+      <p className="fineprint">
+        * og stiplet ramme = læst ud af ingredienslisten, ikke et allergenfelt.
+      </p>
     </section>
   );
 }

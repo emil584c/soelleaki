@@ -32,13 +32,34 @@ export default function AboutView() {
           <dd>Nogen har registreret en glutenfri-mærkning. Brugerindsendt, ikke en garanti.</dd>
         </div>
         <div>
+          <dt>Korn i listen</dt>
+          <dd>
+            Ingredienslisten nævner hvede, rug, byg, havre eller lignende, men intet allergenfelt
+            bekræfter det. Strimlen under stemplet siger hvad der blev fundet.
+          </dd>
+        </div>
+        <div>
+          <dt>Ingen korn i listen</dt>
+          <dd>
+            Hele ingredienslisten er gennemsøgt, og der er ingen kornsorter i den. Det er en
+            vurdering af ingredienserne, ikke en mærkning: spor fra produktionen står sjældent i
+            listen.
+          </dd>
+        </div>
+        <div>
           <dt>Data mangler</dt>
           <dd>
-            Ingen har udfyldt allergenfelterne. Det betyder <em>ikke</em> at varen er sikker — det
-            betyder at vi ikke ved det.
+            Der er ikke nok at gå efter — ingen allergenfelter, og ingen brugbar ingrediensliste.
+            Det betyder <em>ikke</em> at varen er sikker — det betyder at vi ikke ved det.
           </dd>
         </div>
       </dl>
+      <p className="body">
+        Farven siger hvor alvorligt det er, rammen hvor sikkert vi ved det: <strong>hel ramme</strong>{' '}
+        betyder at svaret står i et allergenfelt eller en mærkning, <strong>stiplet ramme</strong> at
+        det er læst ud af ingredienslisten. En ingrediensliste kan mangle noget — et allergenfelt er
+        nogen der har taget stilling.
+      </p>
 
       <h3 className="sub">Datakilde</h3>
       <p className="body">

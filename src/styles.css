@@ -235,8 +235,13 @@ body {
 }
 .stamp--void .stamp__box {
   color: var(--ink-soft);
-  border-style: dashed;
 }
+
+/* Anden akse end farven: stiplet ramme = læst ud af ingredienslisten,
+   ikke stemplet af et allergenfelt. Gælder også den tomme tilstand. */
+.stamp--unconfirmed .stamp__box,
+.stamp--unconfirmed .stamp__box::before,
+.stamp--void .stamp__box,
 .stamp--void .stamp__box::before {
   border-style: dashed;
 }
@@ -277,6 +282,7 @@ body {
 .mini--safe {
   color: var(--safe);
 }
+.mini--unconfirmed,
 .mini--void {
   border-style: dashed;
 }

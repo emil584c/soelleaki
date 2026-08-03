@@ -1,5 +1,5 @@
 import StatusStamp from './StatusStamp.jsx';
-import { STATUS } from '../lib/glutenStatus.js';
+import { QUALITY, STATUS } from '../lib/glutenStatus.js';
 import {
   humanizeTag,
   ingredientsText,
@@ -111,10 +111,21 @@ function FoundResult({ lookup }) {
         />
         <Field term="Spor" tags={evidence.traces} empty="Feltet er tomt — ikke udfyldt af nogen" />
         <Field term="Mærkning" tags={evidence.labels} empty="Ingen glutenfri-mærkning registreret" />
+        <div className="fields__row">
+          <dt>Ingrediensliste</dt>
+          <dd>
+            {evidence.ingredientQuality === QUALITY.NONE ? (
+              <span className="fields__empty">Ikke udfyldt — intet at søge i</span>
+            ) : (
+              INGREDIENT_BASIS[evidence.ingredientQuality]
+            )}
+          </dd>
+        </div>
       </dl>
 
       {ingredients && (
-        <details className="details">
+        // Hviler vurderingen på listen, skal man kunne se den uden at klikke.
+        <details className="details" open={heuristic}>
           <summary>Ingrediensliste</summary>
           <p className="ingredients">{ingredients}</p>
         </details>
@@ -122,8 +133,10 @@ function FoundResult({ lookup }) {
 
       <p className="reserve">
         Data er indtastet af frivillige og kan være forældet eller mangelfuld.
-        {status === STATUS.FREE && ' En glutenfri-mærkning her er ikke en producentgaranti.'} Læs
-        altid emballagen første gang du køber en vare.
+        {status === STATUS.FREE && ' En glutenfri-mærkning her er ikke en producentgaranti.'}
+        {status === STATUS.NO_GRAIN &&
+          ' At der ikke står korn i listen, er ikke det samme som en glutenfri-mærkning: forurening under produktionen står sjældent i ingredienserne.'}{' '}
+        Læs altid emballagen første gang du køber en vare.
       </p>
 
       <p className="source">
@@ -134,6 +147,13 @@ function FoundResult({ lookup }) {
     </>
   );
 }
+
+/** Hvad listen duede til — så det er synligt hvad stemplet bygger på. */
+const INGREDIENT_BASIS = {
+  [QUALITY.FULL]: 'Hel liste, gennemsøgt for kornsorter',
+  [QUALITY.THIN]: 'For kort til at bygge en vurdering på',
+  [QUALITY.FOREIGN]: 'På et sprog appen ikke læser',
+};
 
 function Field({ term, tags, empty }) {
   return (

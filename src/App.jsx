@@ -18,6 +18,17 @@ import { cacheProduct, listScans, readCachedProduct, saveScan } from './lib/db.j
 
 const VIEWS = ['scan', 'history', 'about'];
 
+/**
+ * Historikken vurderes forfra ud fra det gemte rå-svar, ikke ud fra den
+ * status der blev gemt dengang. Bliver logikken skarpere, retter gamle
+ * scanninger sig selv — det er hele grunden til at rå-svaret gemmes.
+ */
+function reassess(entry) {
+  if (!entry.snapshot) return entry;
+  const { status, heuristic, evidence } = assessGluten(entry.snapshot);
+  return { ...entry, status, heuristic, grains: evidence.grains };
+}
+
 export default function App() {
   const [view, setView] = useState('scan');
   const [lookup, setLookup] = useState(null); // null = ingen aktiv visning af resultat
@@ -25,7 +36,7 @@ export default function App() {
 
   const refreshHistory = useCallback(() => {
     listScans()
-      .then(setHistory)
+      .then((rows) => setHistory(rows.map(reassess)))
       .catch(() => setHistory([]));
   }, []);
 
