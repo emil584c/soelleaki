@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import Masthead from './components/Masthead.jsx';
+import TabBar from './components/TabBar.jsx';
 import ScanView from './components/ScanView.jsx';
 import ResultView from './components/ResultView.jsx';
 import HistoryView from './components/HistoryView.jsx';
@@ -168,6 +169,8 @@ export default function App() {
           Produktdata fra <span className="src">Open Food Facts</span>, ODbL.
         </p>
       </footer>
+
+      <TabBar view={view} onChange={changeView} />
     </div>
   );
 }

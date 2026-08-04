@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { resolveTheme, toggleTheme, THEMES } from '../lib/theme.js';
 
-const TABS = [
+/** Én definition af fanerne — bundlinjen (TabBar) bruger samme liste. */
+export const TABS = [
   { id: 'scan', label: 'Scan' },
   { id: 'history', label: 'Historik' },
   { id: 'about', label: 'Om' },

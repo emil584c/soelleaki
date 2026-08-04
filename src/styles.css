@@ -710,6 +710,64 @@ body {
   color: var(--text-muted);
 }
 
+/* ---------- Fotolæsning ---------- */
+
+.photo__headrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.photo__head {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.photo__text {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+}
+
+.photo-offer {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.photo-offer .hint {
+  margin-top: 0.5rem;
+}
+
+/* Fremdrift under læsningen: samme flade sprog som resten — en bane, en bjælke. */
+.progress {
+  height: 0.5rem;
+  margin-top: 0.75rem;
+  background-color: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background-color: var(--text);
+  border-radius: var(--r-pill);
+  transition: width 0.2s ease;
+}
+
 /* ---------- Manuel indtastning ---------- */
 
 .manual {
@@ -860,5 +918,77 @@ body {
 
   .card {
     padding: 1.5rem;
+  }
+}
+
+/* ---------- Bundnavigation ---------- */
+
+/*
+  Under 900px — telefoner og små tablets — opfører appen sig som en app:
+  fanerne flytter fra mastheadet ned i en fast bundlinje. Over brydepunktet
+  findes bundlinjen ikke (display: none tager den også ud af
+  skærmlæserens træ), og skrivebordet beholder de øverste faner.
+*/
+.tabbar {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .masthead .tabs {
+    display: none;
+  }
+
+  /* Indholdet skal kunne rulles helt fri af bundlinjen. */
+  .sheet {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+
+  .tabbar {
+    display: block;
+    position: fixed;
+    inset: auto 0 0 0;
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    /* Fri af iPhonens hjemmestreg. */
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 10;
+  }
+
+  .tabbar__row {
+    display: flex;
+    max-width: 33rem;
+    margin: 0 auto;
+  }
+
+  .tabbar__tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 0.5rem 0.25rem 0.55rem;
+    cursor: pointer;
+  }
+
+  .tabbar__tab svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .tabbar__tab--on {
+    color: var(--text);
+    font-weight: 600;
   }
 }

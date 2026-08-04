@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# Genereres af scripts/prepare-ocr.mjs ud fra node_modules.
+public/ocr/
 .DS_Store
 *.local
 .vite/

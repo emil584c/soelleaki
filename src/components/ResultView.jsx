@@ -1,3 +1,5 @@
+import { lazy, Suspense, useEffect, useState } from 'react';
+
 import StatusStamp from './StatusStamp.jsx';
 import { QUALITY, STATUS } from '../lib/glutenStatus.js';
 import {
@@ -8,10 +10,27 @@ import {
   PRODUCT_PAGE_URL,
 } from '../lib/openFoodFacts.js';
 
+/**
+ * Fotolæseren (og tesseract.js bag den) hentes først når nogen beder om
+ * den — stregkodevejen skal ikke bære OCR-koden.
+ */
+const PhotoCheckView = lazy(() => import('./PhotoCheckView.jsx'));
+
 const dateFormat = new Intl.DateTimeFormat('da-DK', { dateStyle: 'short', timeStyle: 'short' });
 
 export default function ResultView({ lookup, onDone, onRetry }) {
   const { state, barcode } = lookup;
+  const [photoMode, setPhotoMode] = useState(false);
+
+  // Ny stregkode, nyt forløb: fotolæseren følger ikke med over.
+  useEffect(() => setPhotoMode(false), [barcode]);
+
+  // Fotolæsning tilbydes præcis dér hvor databasen ikke kunne svare:
+  // ukendt vare, opslag der fejlede, eller et produkt uden brugbare data.
+  const photoWorthwhile =
+    state === 'missing' ||
+    state === 'error' ||
+    (state === 'found' && lookup.assessment.status === STATUS.UNKNOWN);
 
   return (
     <section className="card">
@@ -24,38 +43,67 @@ export default function ResultView({ lookup, onDone, onRetry }) {
 
       <p className="code">{barcode}</p>
 
-      {state === 'loading' && <p className="hint">Slår op i Open Food Facts …</p>}
-
-      {state === 'found' && <FoundResult lookup={lookup} />}
-
-      {state === 'missing' && (
+      {photoMode ? (
+        <Suspense fallback={<p className="hint">Henter fotolæseren …</p>}>
+          <PhotoCheckView onClose={() => setPhotoMode(false)} />
+        </Suspense>
+      ) : (
         <>
-          <StatusStamp status={STATUS.UNKNOWN} />
-          <div className="notice">
-            <strong>Produktet findes ikke i databasen.</strong>
-            <p>
-              Ingen har tilføjet denne stregkode til Open Food Facts endnu. Det siger intet om
-              varens indhold — læs emballagen.
-            </p>
-            <p>
-              <a className="link" href={PRODUCT_EDIT_URL(barcode)} target="_blank" rel="noreferrer">
-                Tilføj produktet på Open Food Facts →
-              </a>
-            </p>
-          </div>
-        </>
-      )}
+          {state === 'loading' && <p className="hint">Slår op i Open Food Facts …</p>}
 
-      {state === 'error' && (
-        <>
-          <StatusStamp status={STATUS.UNKNOWN} />
-          <div className="notice notice--warn" role="alert">
-            <strong>{lookup.offline ? 'Ingen forbindelse' : 'Opslaget fejlede'}</strong>
-            <p>{lookup.message}</p>
-            <button type="button" className="btn" onClick={() => onRetry(barcode)}>
-              Prøv igen
-            </button>
-          </div>
+          {state === 'found' && <FoundResult lookup={lookup} />}
+
+          {state === 'missing' && (
+            <>
+              <StatusStamp status={STATUS.UNKNOWN} />
+              <div className="notice">
+                <strong>Produktet findes ikke i databasen.</strong>
+                <p>
+                  Ingen har tilføjet denne stregkode til Open Food Facts endnu. Det siger intet om
+                  varens indhold — læs emballagen.
+                </p>
+                <p>
+                  <a
+                    className="link"
+                    href={PRODUCT_EDIT_URL(barcode)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Tilføj produktet på Open Food Facts →
+                  </a>
+                </p>
+              </div>
+            </>
+          )}
+
+          {state === 'error' && (
+            <>
+              <StatusStamp status={STATUS.UNKNOWN} />
+              <div className="notice notice--warn" role="alert">
+                <strong>{lookup.offline ? 'Ingen forbindelse' : 'Opslaget fejlede'}</strong>
+                <p>{lookup.message}</p>
+                <button type="button" className="btn" onClick={() => onRetry(barcode)}>
+                  Prøv igen
+                </button>
+              </div>
+            </>
+          )}
+
+          {photoWorthwhile && (
+            <div className="photo-offer">
+              <button
+                type="button"
+                className="btn btn--wide"
+                onClick={() => setPhotoMode(true)}
+              >
+                Læs ingredienslisten med kameraet
+              </button>
+              <p className="hint">
+                Står du med varen i hånden, kan appen læse deklarationen fra et billede — på
+                enheden, uden at billedet gemmes.
+              </p>
+            </div>
+          )}
         </>
       )}
     </section>

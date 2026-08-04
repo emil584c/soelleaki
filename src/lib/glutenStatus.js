@@ -468,6 +468,89 @@ export function assessGluten(product) {
   return { status: STATUS.UNKNOWN, heuristic: false, notes, evidence };
 }
 
+/**
+ * Vurdér en ingrediensliste læst med kameraet fra selve emballagen.
+ *
+ * Bruges når Open Food Facts ikke har noget at komme med: brugeren tager
+ * et billede af varedeklarationen, teksten læses på enheden, brugeren
+ * retter den til — og først derefter lander den her.
+ *
+ * Kilden er svagere end et API-opslag på ét punkt og stærkere på et andet:
+ * teksten kan indeholde læsefejl fra kameraet, men den kommer fra pakken i
+ * brugerens hånd, ikke fra en fremmed indtastning. Derfor gælder samme
+ * grundregler som i assessGluten — et fund siges lige ud, et manglende
+ * fund kræver en hel liste uden flertydige led — men sproggaten erstattes
+ * af en note: vi kan ikke slå sproget op, så vi siger i stedet hvilke
+ * sprog ordbogen dækker.
+ *
+ * Alt herfra er en læsning, aldrig en deklaration. `heuristic` er sat på
+ * alle svar der bygger på teksten, så den stiplede kant følger med.
+ *
+ * @param {string} text Den aflæste (og evt. brugerrettede) tekst.
+ * @returns {{status: string, heuristic: boolean, notes: string[], evidence: object}}
+ */
+export function assessIngredientsText(text) {
+  const raw = typeof text === 'string' ? text.trim() : '';
+  const notes = [];
+
+  const evidence = {
+    allergens: [],
+    traces: [],
+    labels: [],
+    grains: [],
+    ambiguous: [],
+    ingredientsSearched: raw.length > 0,
+    ingredientQuality: QUALITY.NONE,
+    source: 'photo',
+  };
+
+  if (!raw) {
+    notes.push('Der blev ikke læst nogen tekst i billedet.');
+    return { status: STATUS.UNKNOWN, heuristic: false, notes, evidence };
+  }
+
+  const { grains, ambiguous } = findGrains(raw);
+  const items = countItems(raw);
+  evidence.grains = grains;
+  evidence.ambiguous = ambiguous;
+  evidence.ingredientQuality = items >= 2 ? QUALITY.FULL : QUALITY.THIN;
+
+  if (grains.length > 0) {
+    notes.push(
+      'Formodningen bygger på tekst læst fra dit billede af emballagen. Tjek at ordet også står på selve pakken.',
+    );
+    if (isOatOnly(grains)) {
+      notes.push('Kun havre blev fundet — glutenfri af natur, men ofte forurenet.');
+    }
+    return { status: STATUS.GRAIN, heuristic: true, notes, evidence };
+  }
+
+  if (ambiguous.length > 0) {
+    notes.push(
+      `Teksten nævner ${ambiguous.join(', ')} uden at sige hvilken kornsort. Det er som regel hvede, men det står der ikke.`,
+    );
+    return { status: STATUS.UNKNOWN, heuristic: false, notes, evidence };
+  }
+
+  if (items < 2) {
+    notes.push(
+      'Der blev kun læst et enkelt led — ikke nok til en hel deklaration. Prøv at få hele ingredienslisten med i billedet.',
+    );
+    return { status: STATUS.UNKNOWN, heuristic: false, notes, evidence };
+  }
+
+  notes.push(
+    'Den aflæste tekst er gennemsøgt uden fund af kornsorter. Kameralæsning kan stave forkert — er teksten på skærmen ikke magen til pakken, så ret den og vurdér igen.',
+  );
+  notes.push(
+    'Ordbogen dækker dansk, svensk, engelsk, tysk og fransk. Er listen på et andet sprog, kan en kornsort slippe forbi.',
+  );
+  notes.push(
+    'Spor fra produktionen står ikke altid i ingredienslisten. Ved cøliaki: læs også "kan indeholde spor af"-linjen på pakken.',
+  );
+  return { status: STATUS.NO_GRAIN, heuristic: true, notes, evidence };
+}
+
 /** Kort, entydig overskrift til vurderingen. */
 export const STATUS_LABEL = {
   [STATUS.CONTAINS]: 'Indeholder gluten',

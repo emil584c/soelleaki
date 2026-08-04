@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   assessGluten,
+  assessIngredientsText,
   ingredientQuality,
   QUALITY,
   scanIngredientsForGrains,
@@ -250,6 +251,61 @@ describe('assessGluten — når listen er der, men allergenfeltet tier', () => {
     });
     expect(result.status).toBe(STATUS.NO_GRAIN);
     expect(result.notes.join(' ')).toMatch(/kunne ikke genkende 3 af 4/i);
+  });
+});
+
+describe('assessIngredientsText — tekst læst med kameraet', () => {
+  it('siger et kornfund lige ud, som læsning', () => {
+    const result = assessIngredientsText('Hvedemel, vand, gær, salt');
+    expect(result.status).toBe(STATUS.GRAIN);
+    expect(result.heuristic).toBe(true);
+    expect(result.evidence.grains).toContain('hvede');
+    expect(result.notes.join(' ')).toMatch(/billede/i);
+  });
+
+  it('finder kornet selv om kameraet har læst resten af linjen skævt', () => {
+    // Typisk OCR-output: støj, forkerte mellemrum, tabte tegn — men kornet står der.
+    const result = assessIngredientsText('lngredienser: FULDKORNSHVEDEMEL (32 7o), vand. sa|t');
+    expect(result.status).toBe(STATUS.GRAIN);
+    expect(result.evidence.grains).toContain('hvede');
+  });
+
+  it('melder ingen korn i en hel liste uden fund — med forbehold for læsefejl', () => {
+    const result = assessIngredientsText('Pasteuriseret komælk, salt, syrningskultur, osteløbe');
+    expect(result.status).toBe(STATUS.NO_GRAIN);
+    expect(result.heuristic).toBe(true);
+    expect(result.notes.join(' ')).toMatch(/stave forkert/i);
+    expect(result.notes.join(' ')).toMatch(/spor/i);
+  });
+
+  it('lader flertydige led spærre for "ingen korn", præcis som i API-vejen', () => {
+    const result = assessIngredientsText('Kartofler, rasp, solsikkeolie, salt');
+    expect(result.status).toBe(STATUS.UNKNOWN);
+    expect(result.notes.join(' ')).toMatch(/uden at sige hvilken kornsort/i);
+  });
+
+  it('bygger ikke en vurdering på en stump', () => {
+    const result = assessIngredientsText('Ost');
+    expect(result.status).toBe(STATUS.UNKNOWN);
+    expect(result.notes.join(' ')).toMatch(/ikke nok/i);
+  });
+
+  it('bliver ved UKENDT når der ingen tekst er', () => {
+    for (const text of ['', '   ', undefined, null]) {
+      const result = assessIngredientsText(text);
+      expect(result.status).toBe(STATUS.UNKNOWN);
+      expect(result.heuristic).toBe(false);
+    }
+  });
+
+  it('lader sig ikke narre af "glutenfri hvedestivelse" i et billede', () => {
+    const result = assessIngredientsText('Majsstivelse, glutenfri hvedestivelse, vand, salt');
+    expect(result.status).toBe(STATUS.NO_GRAIN);
+  });
+
+  it('markerer altid svaret som foto-kilde', () => {
+    expect(assessIngredientsText('Hvedemel, vand').evidence.source).toBe('photo');
+    expect(assessIngredientsText('').evidence.source).toBe('photo');
   });
 });
 

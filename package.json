@@ -5,18 +5,23 @@
   "type": "module",
   "description": "Offline-first PWA der scanner stregkoder og viser gluten-/allergenstatus fra Open Food Facts. Alt data bliver på enheden.",
   "scripts": {
+    "predev": "node scripts/prepare-ocr.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/prepare-ocr.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "ocr-assets": "node scripts/prepare-ocr.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
+    "@tesseract.js-data/dan": "^1.0.0",
     "@vitejs/plugin-react": "^6.0.5",
     "vite": "^8.2.0",
     "vitest": "^4.1.10"

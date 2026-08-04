@@ -17,9 +17,14 @@ export class CameraError extends Error {
 
 /**
  * Åbn bagkameraet og kobl det på et <video>-element.
+ *
+ * Stregkoder læses fint i 720p; fotolæsning af en varedeklaration beder om
+ * mere, fordi små bogstaver skal være skarpe. Ønskerne er "ideal" — enheden
+ * giver hvad den kan.
+ *
  * @returns {Promise<MediaStream>}
  */
-export async function openCamera(videoElement) {
+export async function openCamera(videoElement, { width = 1280, height = 720 } = {}) {
   if (!globalThis.isSecureContext) {
     throw new CameraError(
       'Kameraet kræver HTTPS. Åbn siden via https:// (eller localhost).',
@@ -35,8 +40,8 @@ export async function openCamera(videoElement) {
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: { ideal: 'environment' },
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
+        width: { ideal: width },
+        height: { ideal: height },
       },
       audio: false,
     });

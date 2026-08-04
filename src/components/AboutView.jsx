@@ -84,7 +84,8 @@ export default function AboutView() {
         Alt bliver lokalt i browseren. Ingen konto, ingen server, ingen synkronisering, ingen
         analytics eller sporing. Appen taler kun med Open Food Facts, og kun når du slår en
         stregkode op. Kameraet er åbent mens du scanner og lukkes bagefter — billederne forlader
-        aldrig telefonen og bliver ikke gemt.
+        aldrig telefonen og bliver ikke gemt. Det gælder også fotolæsningen af ingredienslister:
+        teksten læses af et modul der ligger på appens eget domæne og kører på enheden.
       </p>
 
       {summary && (
@@ -114,9 +115,16 @@ export default function AboutView() {
 
       <h3 className="sub">Begrænsninger</h3>
       <ul className="notes">
-        <li>Kameralæsning kræver en Chromium-browser, typisk Chrome på Android.</li>
+        <li>
+          Stregkodelæsning med kameraet kræver en Chromium-browser, typisk Chrome på Android.
+          Fotolæsning af ingredienslisten virker i alle browsere med kamera — også på iPhone.
+        </li>
         <li>Opslag kræver internet. Kun varer du selv har scannet, findes i den lokale cache.</li>
         <li>Kun gluten vurderes automatisk. Øvrige allergener vises som rå felter.</li>
+        <li>
+          Fotolæsning er en læsning af et billede: den kan stave forkert, og resultatet vises
+          altid med stiplet kant og skal rettes til, før det vurderes.
+        </li>
       </ul>
     </section>
   );

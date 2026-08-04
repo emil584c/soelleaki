@@ -98,14 +98,44 @@ Logikken ligger i [`src/lib/glutenStatus.js`](src/lib/glutenStatus.js) og er
 dækket af tests i `src/lib/glutenStatus.test.js`. **Ret aldrig i den uden at
 køre testene** — det er den fil hvor en fejl kan gøre reel skade.
 
+### Fotolæsning som sidste udvej
+
+Når hverken Open Food Facts eller den lokale cache har noget at komme med —
+ukendt stregkode, fejlet opslag eller `DATA MANGLER` — tilbyder resultatsiden
+at læse ingredienslisten fra et billede af selve pakken. Teksten læses med
+tesseract.js på enheden og gennemsøges med præcis samme kornordbog som
+API-vejen.
+
+Tre ting holder vejen ærlig:
+
+1. **Brugeren skal forbi et redigeringstrin.** Kameralæsning staver forkert,
+   og en læsefejl der æder et "hvede", ville give et falsk "ingen korn".
+   Den aflæste tekst står derfor i et redigerbart felt og vurderes først når
+   brugeren — med pakken i hånden — har sagt god for den.
+2. **Alt hentes fra eget domæne.** tesseract.js henter normalt worker,
+   wasm-kerne og sprogmodel fra jsDelivr under kørsel. Det ville være appens
+   eneste skjulte tredjepartsforespørgsel, så `scripts/prepare-ocr.mjs`
+   (kører automatisk før `dev` og `build`) kopierer i stedet filerne fra
+   node_modules til `public/ocr/`. Første brug henter ca. 6 MB fra eget
+   domæne; derefter ligger modulet i service worker-cachen, også offline.
+   Billedet forlader aldrig enheden.
+3. **Resultatet er en læsning og opfører sig som en.** Stiplet kant, egne
+   forbehold i noterne (læsefejl, sprogdækning, spor), og det gemmes ikke i
+   historikken — det bygger på et øjebliksbillede af en pakke, ikke på data
+   der kan slås op igen.
+
+Vurderingen ligger i `assessIngredientsText()` i samme fil som resten af
+logikken, og er dækket af de samme tests.
+
 ## Kom i gang
 
 ```sh
 npm install
-npm run dev       # dev-server, også tilgængelig fra telefonen på samme net
-npm test          # tests af vurderingslogik og stregkodevalidering
-npm run build     # statisk build i dist/
-npm run icons     # gengenererer app-ikonerne (kræves kun hvis motivet ændres)
+npm run dev        # dev-server, også tilgængelig fra telefonen på samme net
+npm test           # tests af vurderingslogik og stregkodevalidering
+npm run build      # statisk build i dist/
+npm run icons      # gengenererer app-ikonerne (kræves kun hvis motivet ændres)
+npm run ocr-assets # samler fotolæserens filer i public/ocr/ (kører selv før dev/build)
 ```
 
 Kameraet kræver HTTPS. `localhost` regnes som sikker kontekst, men skal du teste
@@ -142,12 +172,21 @@ src/
     barcodeDetectorEngine.js   primær motor: browserens BarcodeDetector
     camera.js         getUserMedia, oprydning af streams
     formats.js        EAN-13/EAN-8/UPC-A/UPC-E, normalisering, modulo-10-tjek
+  ocr/            fotolæsning af ingredienslister, isoleret bag ét interface
+    index.js          readImageText(billede) -> Promise<string>, tesseract.js bagved
   lib/
     glutenStatus.js   vurderingslogikken (sikkerhedskritisk)
     openFoodFacts.js  API-klient
     db.js             IndexedDB: historik + produktcache
-  components/     visningen
+  components/     visningen; PhotoCheckView (og tesseract.js) hentes først ved brug
+public/
+  ocr/            worker, wasm-kerne og dansk sprogmodel — genereret af
+                  scripts/prepare-ocr.mjs, gitignoreret, serveres fra eget domæne
 ```
+
+På telefoner og små tablets (under 900 px) flytter navigationen ned i en fast
+bundlinje som i en indbygget app; på bredere skærme står fanerne øverst som
+hidtil. Samme tre visninger, samme kode — kun placeringen skifter.
 
 ### Scanneren er udskiftelig med vilje
 
