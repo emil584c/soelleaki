@@ -46,6 +46,9 @@
   --void-bg: #f9fafb;
   --void-line: #d0d5dd;
 
+  /* Tekst oven på den fyldte primærknap (som bruger --text som flade). */
+  --on-primary: #ffffff;
+
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
     sans-serif;
 
@@ -55,6 +58,43 @@
   --r-pill: 999px;
 
   --gap: 1rem;
+
+  color-scheme: light;
+}
+
+/*
+  Mørkt tema: samme neutrale flade-logik, blot vendt. Statusfarverne er
+  lysere teksttoner på mørke flader, så kontrastreglen stadig holder.
+*/
+:root[data-theme='dark'] {
+  --bg: #0c0e12;
+  --surface: #161b22;
+  --surface-sunken: #0c0e12;
+  --border: #2a303c;
+  --border-strong: #3d4554;
+  --text: #f2f4f7;
+  --text-muted: #98a2b3;
+  --text-disabled: #667085;
+
+  --danger: #f97066;
+  --danger-bg: #2a1215;
+  --danger-line: #912018;
+
+  --warn: #fdb022;
+  --warn-bg: #2a1c08;
+  --warn-line: #93370d;
+
+  --safe: #32d583;
+  --safe-bg: #0c1f17;
+  --safe-line: #027a48;
+
+  --void: #98a2b3;
+  --void-bg: #1a1f27;
+  --void-line: #3d4554;
+
+  --on-primary: #0c0e12;
+
+  color-scheme: dark;
 }
 
 * {
@@ -112,6 +152,17 @@ body {
   padding-top: 1.25rem;
 }
 
+.masthead__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.masthead__title {
+  min-width: 0;
+}
+
 .masthead__title h1 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -123,6 +174,33 @@ body {
   font-size: 0.875rem;
   color: var(--text-muted);
   margin: 0.15rem 0 1rem;
+}
+
+.theme-toggle {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: 0.1rem;
+  padding: 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Segmenteret kontrol: én grå bane, aktiv fane som hvid pille. */
@@ -420,7 +498,7 @@ body {
 .btn--primary {
   background-color: var(--text);
   border-color: var(--text);
-  color: #ffffff;
+  color: var(--on-primary);
 }
 
 .btn--primary:disabled {
